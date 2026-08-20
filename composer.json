@@ -1,0 +1,34 @@
+{
+    "name": "cachedigital/core",
+    "description": "Core package for Cache Digital API integration",
+    "type": "project",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@gitlab.com:cachebank/sdk/core-php.git"
+        }
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Cache Digital",
+            "email": "dev@cachedigital.com.br"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "guzzlehttp/guzzle": "^7.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "CacheDigital\\Core\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "CacheDigital\\Core\\CacheDigitalServiceProvider"
+            ]
+        }
+    }
+}
