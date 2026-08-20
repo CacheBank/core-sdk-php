@@ -21,7 +21,7 @@
   },
   "autoload": {
     "psr-4": {
-      "CacheDigital\\Core\\": "src/"
+      "CacheDigital\\Core\\": ""
     }
   },
   "extra": {
