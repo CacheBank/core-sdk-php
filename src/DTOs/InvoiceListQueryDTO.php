@@ -33,9 +33,6 @@ class InvoiceListQueryDTO
             $queryString['invoice'] = $this->invoice->toArray();
         }
 
-        if ($this->invoicePix) {
-            $queryString['invoicePix'] = $this->invoicePix->toArray();
-        }
 
         if (!empty($queryString)) {
             $payload['queryString'] = $queryString;
