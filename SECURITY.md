@@ -2,7 +2,7 @@
 
 ## Como relatar uma vulnerabilidade
 
-Envie um e-mail para **seguranca@cachedigital.com.br** com:
+Envie um e-mail para **suporte@cachedigital.com.br** com:
 
 - a descrição do problema e o impacto;
 - os passos para reproduzir;
