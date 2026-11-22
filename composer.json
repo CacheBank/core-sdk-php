@@ -1,13 +1,9 @@
 {
   "name": "cachedigital/core",
-  "description": "Core package for Cache Digital API integration",
+  "description": "SDK oficial da Cachê Digital para PHP: cobranças Pix e Bolepix, carnês, clientes e faturas pela API da sua conta.",
   "type": "library",
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "git@gitlab.com:cachebank/sdk/core-php.git"
-    }
-  ],
+  "keywords": ["cache digital", "cachê", "pix", "boleto", "bolepix", "cobrança", "carnê", "api", "sdk"],
+  "homepage": "https://github.com/CacheBank/core-sdk-php",
   "license": "MIT",
   "authors": [
     {
@@ -15,14 +11,33 @@
       "email": "dev@cachedigital.com.br"
     }
   ],
+  "support": {
+    "issues": "https://github.com/CacheBank/core-sdk-php/issues",
+    "source": "https://github.com/CacheBank/core-sdk-php"
+  },
   "require": {
     "php": "^8.1",
+    "ext-json": "*",
     "guzzlehttp/guzzle": "^7.5"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.6 || ^10.0"
+  },
+  "suggest": {
+    "illuminate/support": "Integração automática com Laravel (config/cachedigital.php)"
   },
   "autoload": {
     "psr-4": {
       "CacheDigital\\Core\\": "src/"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "CacheDigital\\Core\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit"
   },
   "extra": {
     "laravel": {
@@ -30,5 +45,6 @@
         "CacheDigital\\Core\\CacheDigitalServiceProvider"
       ]
     }
-  }
+  },
+  "minimum-stability": "stable"
 }

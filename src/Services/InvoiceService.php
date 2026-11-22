@@ -2,29 +2,30 @@
 
 namespace CacheDigital\Core\Services;
 
+use CacheDigital\Core\Config;
 use CacheDigital\Core\DTOs\InvoiceListQueryDTO;
+use CacheDigital\Core\Exceptions\CacheDigitalException;
+use CacheDigital\Core\Http\Transport;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
-use Exception;
 
+/**
+ * Faturas da conta (API v2, credenciais client_id/client_secret da conta).
+ *
+ *   CacheDigital::make($id, $secret)->invoices()->list(new InvoiceListQueryDTO(...));
+ *
+ * Compatível com a 1.0: mesmo construtor, authenticate() e list() devolvendo o corpo da resposta.
+ */
 class InvoiceService
 {
     protected ?string $clientId = null;
     protected ?string $clientSecret = null;
     protected string $baseUrl;
-    protected Client $httpClient;
+    protected Transport $transport;
 
-    public function __construct(?string $baseUrl = null, ?Client $httpClient = null)
+    public function __construct(?string $baseUrl = null, ?Client $httpClient = null, ?Transport $transport = null)
     {
-        $this->baseUrl = $baseUrl
-            ?? $_ENV['CACHE_DIGITAL_URL']
-            ?? getenv('CACHE_DIGITAL_URL')
-            ?? 'https://api.cachebank.com.br';
-
-        $this->httpClient = $httpClient ?? new Client([
-            'base_uri' => $this->baseUrl,
-            'timeout'  => 10.0,
-        ]);
+        $this->baseUrl = Config::baseUrl($baseUrl);
+        $this->transport = $transport ?? new Transport($this->baseUrl, $httpClient);
     }
 
     public function authenticate(string $clientId, string $clientSecret): self
@@ -36,31 +37,27 @@ class InvoiceService
     }
 
     /**
-     * Aceita tanto o InvoiceListQueryDTO tipado quanto um array simples
+     * Lista as faturas (POST /api/v2/invoice/list). Aceita o DTO tipado ou um array.
+     *
+     * @throws \CacheDigital\Core\Exceptions\ApiException|\CacheDigital\Core\Exceptions\ConnectionException
      */
     public function list(InvoiceListQueryDTO|array $query): array
     {
-        if (!$this->clientId || !$this->clientSecret) {
-            throw new Exception("Credenciais (clientId e clientSecret) não foram informadas. Chame ->authenticate() antes.");
-        }
-
-        // Converte o DTO para array caso tenha sido passado como DTO
         $payload = $query instanceof InvoiceListQueryDTO ? $query->toArray() : $query;
 
-        try {
-            $response = $this->httpClient->post('/api/v2/invoice/list', [
-                'headers' => [
-                    'client_id'     => $this->clientId,
-                    'client_secret' => $this->clientSecret,
-                    'Accept'        => 'application/json',
-                    'Content-Type'  => 'application/json',
-                ],
-                'json' => $payload,
-            ]);
+        // Consulta: pode tentar de novo com segurança (não cria nada).
+        return $this->transport->request('POST', '/api/v2/invoice/list', [
+            'headers' => $this->credentials(),
+            'json' => $payload,
+        ])->body();
+    }
 
-            return json_decode($response->getBody()->getContents(), true);
-        } catch (GuzzleException $e) {
-            throw new Exception("Erro de comunicação com a API Cache Digital: " . $e->getMessage(), $e->getCode());
+    protected function credentials(): array
+    {
+        if (!$this->clientId || !$this->clientSecret) {
+            throw new CacheDigitalException('Credenciais (clientId e clientSecret) não foram informadas. Chame ->authenticate() antes.');
         }
+
+        return ['client_id' => $this->clientId, 'client_secret' => $this->clientSecret];
     }
 }
