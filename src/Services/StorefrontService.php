@@ -15,10 +15,13 @@ use CacheDigital\Core\Http\ApiResponse;
  */
 class StorefrontService extends InvoiceService
 {
-    /** POST /api/v2/storefront/order (carrinho, pagador e meio de pagamento). */
+    /**
+     * POST /api/external/v1/storefront/order (carrinho, pagador e meio de pagamento).
+     * Respeita o limite de emissão de cobranças da conta: acima dele, 422 com erro em "order".
+     */
     public function order(array $payload): ApiResponse
     {
-        return $this->transport->send('POST', '/api/v2/storefront/order', [
+        return $this->transport->send('POST', '/api/external/v1/storefront/order', [
             'headers' => $this->credentials(),
             'json' => $payload,
         ]);

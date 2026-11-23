@@ -1,5 +1,10 @@
 # Changelog
 
+## Próxima versão
+
+### Alterações
+- `storefront()->order()` passa a chamar `POST /api/external/v1/storefront/order`, que respeita o limite de emissão de cobranças da conta. Acima do limite, a resposta é `422` com o erro em `order`. A rota antiga (`/api/v2/storefront/order`) continua existindo na Cachê, sem limite.
+
 ## 1.1.0
 
 ### Novidades
